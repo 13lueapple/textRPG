@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<style>
+    #game-container {
+        background-color: black;
+        color: lime;
+        font-family: monospace;
+        padding: 20px;
+        width: 800px;
+        height: 600px;
+        margin: 0 auto;
+        overflow-y: scroll;
+    }
+    #input-line {
+        background-color: black;
+        color: lime;
+        font-family: monospace;
+        border: none;
+        width: 100%;
+        outline: none;
+    }
+    .prompt::before {
+        content: "> ";
+    }
+</style>
+
+<div id="game-container">
+    <div id="output"></div>
+    <div class="prompt">
+        <input type="text" id="input-line" autofocus>
+    </div>
+</div>
+
+<script>
+    const player = {
+        name: "",
+        hp: 100,
+        maxHp: 100,
+        attack: 10,
+        level: 1,
+        exp: 0
+    };
+
+    const output = document.getElementById("output");
+    const input = document.getElementById("input-line");
+
+    function print(text) {
+        output.innerHTML += text + "<br>";
+        output.scrollTop = output.scrollHeight;
+    }
+
+    print("터미널 RPG에 오신 것을 환영합니다!");
+    print("당신의 이름을 입력해주세요:");
+
+    let gameState = "naming";
+
+    input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            const command = input.value.toLowerCase();
+            input.value = "";
+
+            switch(gameState) {
+                case "naming":
+                    player.name = command;
+                    print(`환영합니다, ${player.name}님!`);
+                    print("명령어: 상태, 탐험, 도움말");
+                    gameState = "playing";
+                    break;
+
+                case "playing":
+                    switch(command) {
+                        case "상태":
+                            print(`이름: ${player.name}`);
+                            print(`레벨: ${player.level}`);
+                            print(`HP: ${player.hp}/${player.maxHp}`);
+                            print(`공격력: ${player.attack}`);
+                            print(`경험치: ${player.exp}`);
+                            break;
+
+                        case "탐험":
+                            const monsters = ["슬라임", "고블린", "오크", "스켈레톤"];
+                            const monster = monsters[Math.floor(Math.random() * monsters.length)];
+                            const monsterHp = Math.floor(Math.random() * 30) + 20;
+                            
+                            print(`${monster}을(를) 만났습니다!`);
+                            print(`전투에서 승리했습니다!`);
+                            const expGain = Math.floor(Math.random() * 20) + 10;
+                            player.exp += expGain;
+                            print(`경험치를 ${expGain} 획득했습니다!`);
+                            
+                            if (player.exp >= 100) {
+                                player.level++;
+                                player.exp -= 100;
+                                player.maxHp += 10;
+                                player.hp = player.maxHp;
+                                player.attack += 5;
+                                print(`레벨업! ${player.level}레벨이 되었습니다!`);
+                            }
+                            break;
+
+                        case "도움말":
+                            print("사용 가능한 명령어:");
+                            print("- 상태: 캐릭터 상태 확인");
+                            print("- 탐험: 몬스터와 전투");
+                            print("- 도움말: 명령어 목록 확인");
+                            break;
+
+                        default:
+                            print("알 수 없는 명령어입니다. '도움말'을 입력하여 명령어를 확인하세요.");
+                    }
+                    break;
+            }
+        }
+    });
+</script>
+</body>
+</html>
