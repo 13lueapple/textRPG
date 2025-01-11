@@ -30,7 +30,7 @@ class Display {
     animate() {
         setInterval(() => {
             this.updatePosition();
-        }, 1000 / 30); // 초당 30프레임
+        }, 1000 / 60); // 초당 30프레임
     }
 
     updatePosition() {
